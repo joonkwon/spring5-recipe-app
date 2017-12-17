@@ -61,12 +61,14 @@ public class IndexControllerTest {
 //		verify(model, times(1)).addAttribute(
 //				ArgumentMatchers.matches("recipes"), 
 //				ArgumentMatchers.anySet());
-		verify(model, times(1)).addAttribute(ArgumentMatchers.matches("recipes"), argumentCaptor.capture());
+		verify(model, times(1)).addAttribute(
+				ArgumentMatchers.matches("recipes"), 
+				argumentCaptor.capture());
 		
 		Set<Recipe> returnedIndexValue = argumentCaptor.getValue();
 		assertEquals(recipes, returnedIndexValue);
 	}
-	
+
 	@Test
 	public void mockMvcIndex() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(indexController).build();
