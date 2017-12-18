@@ -24,11 +24,14 @@
 							<div class="col-md-3">
 								<h5>Categories:</h5>
 							</div>
-							<div class="col-md-9">
-								<ul>
+							<div class="col-md-9" th:if="${recipe != null}">
+								<ul th:remove="all">
 									<li>Cat one</li>
 									<li>Cat two</li>
 									<li>Cat three</li>
+								</ul>
+								<ul th:each="category:${recipe.categories}">
+									<li th:text="${category.categoryName}">A category</li>
 								</ul>
 							</div>
 						</div>
@@ -37,13 +40,13 @@
 								<h5>Prep Time:</h5>
 							</div>
 							<div class="col-md-3">
-								<p>30 min</p>
+								<p th:text="${recipe.prepTime} + ' min'">30 min</p>
 							</div>
 							<div class="col-md-3">
 								<h5>Difficulty:</h5>
 							</div>
 							<div class="col-md-3">
-								<p>Easy</p>
+								<p th:text="${recipe.difficulty}">Easy</p>
 							</div>
 						</div>
 						<div class="row">
@@ -51,7 +54,7 @@
 								<h5>Cooktime:</h5>
 							</div>
 							<div class="col-md-3">
-								<p>30 min</p>
+								<p th:text="${recipe.cookTime} + ' min'">30 min</p>
 							</div>
 							<div class="col-md-3">
 								<h5>Servings:</h5>
