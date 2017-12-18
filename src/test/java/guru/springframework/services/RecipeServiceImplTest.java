@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,4 +45,16 @@ public class RecipeServiceImplTest {
 		verify(recipeRepository, times(1)).findAll();	
 	}
 
+	@Test
+	public void getRecipeByIdTest() {
+		//create a recipe optional object
+		Long id = new Long(3);
+		Recipe recipe = new Recipe();
+		recipe.setId(id);
+		Optional<Recipe> recipeOptional = Optional.of(recipe);
+		
+		when(recipeRepository.findById(id)).thenReturn(recipeOptional);
+		assertEquals(recipe, recipeService.getRecipeById(id));
+		verify(recipeRepository, times(1)).findById(id);
+	}
 }
