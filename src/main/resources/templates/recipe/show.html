@@ -60,7 +60,7 @@
 								<h5>Servings:</h5>
 							</div>
 							<div class="col-md-3">
-								<p>4</p>
+								<p th:test="${recipe.servings}">4</p>
 							</div>
 						</div>
 						<div class="row">
@@ -68,13 +68,13 @@
 								<h5>Source:</h5>
 							</div>
 							<div class="col-md-3">
-								<p>30 min</p>
+								<p th:text="${recipe.source}">30 min</p>
 							</div>
 							<div class="col-md-3">
 								<h5>URL:</h5>
 							</div>
 							<div class="col-md-3">
-								<p>http://www.example.com/recipe</p>
+								<p th:text="${recipe.url}">http://www.example.com/recipe</p>
 							</div>
 						</div>
 					</div>
@@ -86,11 +86,14 @@
 					</div>
 					<div class="panel-body">
 						<div class="row">
-							<div class="col-md-12">
-								<ul>
+							<div class="col-md-12" th:if="${not #lists.isEmpty(recipe.ingredients)}">
+								<ul th:remove="all">
 									<li>1 Cup of milk</li>
 									<li>1 Teaspoon of chocolate</li>
 									<li>1 Teaspoon of sugar</li>
+								</ul>
+								<ul th:each="ingredient: ${recipe.ingredients}">
+									<li> <span th:text="${ingredient.amount}"></span>&nbsp<span th:text="${ingredient.uom.uom}"></span>&nbsp<span th:text="${ingredient.description}"></span></li>
 								</ul>
 							</div>
 						</div>
