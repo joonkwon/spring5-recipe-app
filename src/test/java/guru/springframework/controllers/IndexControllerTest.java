@@ -58,9 +58,6 @@ public class IndexControllerTest {
 		String output = indexController.index(model);
 		assertEquals("index", output);
 		verify(recipeService, times(1)).getRecipes();
-//		verify(model, times(1)).addAttribute(
-//				ArgumentMatchers.matches("recipes"), 
-//				ArgumentMatchers.anySet());
 		verify(model, times(1)).addAttribute(
 				ArgumentMatchers.matches("recipes"), 
 				argumentCaptor.capture());
