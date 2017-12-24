@@ -16,6 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.springframework.lang.Nullable;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -59,8 +61,12 @@ public class Recipe {
     private Set<Category> categories = new HashSet<Category>();
     
     public void setNotes(Notes notes) {
-    		notes.setRecipe(this);
-    		this.notes = notes;
+    		if (notes == null) {
+    			this.notes = null;
+    		} else {
+	    		notes.setRecipe(this);
+	    		this.notes = notes;
+    		}
     }
     
 	public void addIngredient(Ingredient ingredient) {
