@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class RecipeServiceImpl implements RecipeService {
 	private final RecipeCommandToRecipe recipeCommandToRecipe;
 	private final RecipeToRecipeCommand recipeToRecipeCommand;
 
+	@Autowired
 	public RecipeServiceImpl(RecipeRepository recipeRepository, 
 			RecipeCommandToRecipe recipeCommandToRecipe,
 			RecipeToRecipeCommand recipeToRecipeCommand) {
@@ -48,15 +50,25 @@ public class RecipeServiceImpl implements RecipeService {
 		}
 		return recipeOptional.get();
 	}
-
+	
+	@Override
+	@Transactional
+	public RecipeCommand getCommandById(Long id) {
+		return recipeToRecipeCommand.convert(getRecipeById(id));
+	}
 
 	@Override
 	@Transactional
 	public RecipeCommand saveRecipeCommand(RecipeCommand command) {
 		Recipe detachedRecipe = recipeCommandToRecipe.convert(command);
 		Recipe savedRecipe = recipeRepository.save(detachedRecipe);
+		log.debug("A recipe saved. ID: " + savedRecipe.getId());
 		return recipeToRecipeCommand.convert(savedRecipe);
 	}
 
-	
+	@Override
+	public void deleteById(Long id) {
+		recipeRepository.deleteById(id);
+		log.debug("A recipe deleted. ID: " + id);
+	}
 }
