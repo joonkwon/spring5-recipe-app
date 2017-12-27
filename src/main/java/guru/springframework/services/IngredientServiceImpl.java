@@ -1,9 +1,11 @@
 package guru.springframework.services;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import guru.springframework.commands.IngredientCommand;
 import guru.springframework.commands.RecipeCommand;
@@ -54,6 +56,34 @@ public class IngredientServiceImpl implements IngredientService {
 		}
 		
 		return ingredientCommands;
+	}
+	
+	@Transactional
+	@Override
+	public IngredientCommand saveIngredientCommand(IngredientCommand command, Long recipeId) {
+		log.debug("Fetching the recipeCommand for the ingredientCommand ");
+		RecipeCommand recipeCommand = recipeService.getCommandById(recipeId);
+		Optional<IngredientCommand> ingredientCommandOptional = recipeCommand.getIngredients()
+				.stream()
+				.filter(s -> s.getId().equals(command.getId()))
+				.findFirst();
+		if (ingredientCommandOptional.isPresent()) {
+				IngredientCommand ingredientCommand = ingredientCommandOptional.get();
+				ingredientCommand.setAmount(command.getAmount());
+				ingredientCommand.setDescription(command.getDescription());
+				ingredientCommand.setUom(command.getUom());
+		} else {
+			recipeCommand.getIngredients().add(command);
+		}
+		log.debug("Saving recipe with modified ingredient - ingredient id: " + command.getId());
+		RecipeCommand savedRecipeCommand = recipeService.saveRecipeCommand(recipeCommand);
+		log.debug("Modified ingredient saved for recipe id:" + savedRecipeCommand.getId());
+		return savedRecipeCommand
+				.getIngredients()
+				.stream()
+				.filter(s -> s.getId().equals(command.getId()))
+				.findFirst()
+				.get();
 	}
 
 	

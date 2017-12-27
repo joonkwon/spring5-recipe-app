@@ -5,14 +5,18 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import guru.springframework.commands.IngredientCommand;
+import guru.springframework.commands.RecipeCommand;
 import guru.springframework.domain.Ingredient;
 import lombok.Synchronized;
 
 @Component
 public class IngredientToIngredientCommand implements Converter<Ingredient, IngredientCommand> {
 
-	private UnitOfMeasureToUnitOfMeasureCommand uomToUomCommand;
+	private UnitOfMeasureToUnitOfMeasureCommand uomToUomCommand;	
 	
+	public IngredientToIngredientCommand() {
+	}
+
 	@Synchronized
 	@Nullable
 	@Override
@@ -24,8 +28,14 @@ public class IngredientToIngredientCommand implements Converter<Ingredient, Ingr
 		IngredientCommand ingredientCommand = new IngredientCommand();
 		ingredientCommand.setId(source.getId());
 		ingredientCommand.setDescription(source.getDescription());
-		ingredientCommand.setAmount(source.getAmount());
 		
+		RecipeCommand recipeCommand = new RecipeCommand();
+		if (source.getRecipe() != null) {
+			recipeCommand.setId(source.getRecipe().getId());
+		}
+		ingredientCommand.setRecipe(recipeCommand);
+		
+		ingredientCommand.setAmount(source.getAmount());
 		uomToUomCommand = new UnitOfMeasureToUnitOfMeasureCommand();
 		ingredientCommand.setUom(uomToUomCommand.convert(source.getUom()));
 		
