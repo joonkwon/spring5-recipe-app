@@ -13,10 +13,14 @@ import org.mockito.MockitoAnnotations;
 
 import guru.springframework.commands.IngredientCommand;
 import guru.springframework.commands.RecipeCommand;
+import guru.springframework.repositories.RecipeRepository;
 
 public class IngredientServiceImplTest {
 	
 	IngredientService ingredientService;
+	
+	@Mock
+	RecipeRepository recipeRepository;
 	
 	@Mock
 	RecipeService recipeService;
@@ -24,7 +28,7 @@ public class IngredientServiceImplTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		ingredientService = new IngredientServiceImpl(recipeService);
+		ingredientService = new IngredientServiceImpl(recipeService, recipeRepository);
 	}
 
 	@Test

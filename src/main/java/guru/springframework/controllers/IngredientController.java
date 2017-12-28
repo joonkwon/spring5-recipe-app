@@ -1,5 +1,7 @@
 package guru.springframework.controllers;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import guru.springframework.commands.IngredientCommand;
+import guru.springframework.commands.RecipeCommand;
 import guru.springframework.services.IngredientService;
+import guru.springframework.services.RecipeService;
 import guru.springframework.services.UnitOfMeasureService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,11 +26,13 @@ public class IngredientController {
 	
 	private final IngredientService ingredientService;
 	private final UnitOfMeasureService uomService;
+	private final RecipeService recipeService;
 	
 	@Autowired
-	public IngredientController(IngredientService ingredientService, UnitOfMeasureService uomService) {
+	public IngredientController(IngredientService ingredientService, UnitOfMeasureService uomService, RecipeService recipeService) {
 		this.ingredientService = ingredientService;
 		this.uomService = uomService;
+		this.recipeService = recipeService;
 	}
 	
 	@GetMapping
@@ -71,11 +77,11 @@ public class IngredientController {
 		log.debug("saving ingredient for recipe");
 		IngredientCommand savedIngredientCommand = ingredientService.saveIngredientCommand(ingredient, recipeId);
 		
-		log.debug("ingredient (id: " + savedIngredientCommand.getId() 
-				+ "successfully saved for recipe (id: " 
-				+ savedIngredientCommand.getRecipe().getId());
-		return "redirect:/recipe/"+ recipeId + 
-				"/ingredient/" + ingredient.getId() + "/show";
+		log.debug("ingredient (id: " + savedIngredientCommand.getId()  + ")" 
+				+ " successfully saved for recipe (id: " 
+				+ savedIngredientCommand.getRecipe().getId() + ")");
+		return "redirect:/recipe/"+ savedIngredientCommand.getRecipe().getId() + 
+				"/ingredient/" + savedIngredientCommand.getId() + "/show";
 	}
 
 	@GetMapping
@@ -85,5 +91,26 @@ public class IngredientController {
 		Set<IngredientCommand> ingredients = ingredientService.getIngredientCommandsByrecipeId(new Long(recipeId));
 		model.addAttribute("ingredients", ingredients);
 		return "recipe/ingredient/list";
+	}
+	
+	@GetMapping
+	@RequestMapping("/recipe/{recipeId}/ingredient/new")
+	public String createIngredient(@PathVariable("recipeId") String recipeId, Model model) {
+		IngredientCommand ingredientCommand = new IngredientCommand();
+		
+		log.debug("Fetching recipe for ID: " + recipeId);
+		RecipeCommand recipeCommand = recipeService.getCommandById(new Long(recipeId));
+		if (recipeCommand == null) {
+			log.error("Recipe not found, ID: " + recipeId);
+			return "redirect:/";
+		}
+		log.debug("Recipe found, ID: " + recipeId);
+		ingredientCommand.setRecipe(recipeCommand);
+		model.addAttribute("ingredient", ingredientCommand);
+		
+		log.debug("Fetching all unit of measure");
+		model.addAttribute("uomList", uomService.getAllUomCommand());
+		
+		return "recipe/ingredient/ingredientform";
 	}
 }

@@ -2,6 +2,7 @@ package guru.springframework.services;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,7 @@ public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
 		for (UnitOfMeasure uom: getAllUom()) {
 			allUomCommand.add(uomToCommand.convert(uom));
 		}
+		
 		return allUomCommand;
 	}
 

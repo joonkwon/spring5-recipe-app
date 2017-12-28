@@ -79,6 +79,7 @@ public class IngredientServiceImpl implements IngredientService {
 				ingredientCommand.setUom(command.getUom());
 		} else {
 			recipeCommand.getIngredients().add(command);
+			command.setRecipe(recipeCommand);
 		}
 		log.debug("Saving recipe with modified ingredient - ingredient id: " + command.getId());
 		RecipeCommand savedRecipeCommand = recipeService.saveRecipeCommand(recipeCommand);
@@ -86,7 +87,7 @@ public class IngredientServiceImpl implements IngredientService {
 		return savedRecipeCommand
 				.getIngredients()
 				.stream()
-				.filter(s -> s.getId().equals(command.getId()))
+				.filter(s -> s.getDescription().equals(command.getDescription()))
 				.findFirst()
 				.get();
 	}
