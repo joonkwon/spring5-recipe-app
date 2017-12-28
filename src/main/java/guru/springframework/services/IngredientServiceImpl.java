@@ -9,6 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import guru.springframework.commands.IngredientCommand;
 import guru.springframework.commands.RecipeCommand;
+import guru.springframework.domain.Ingredient;
+import guru.springframework.domain.Recipe;
+import guru.springframework.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -16,10 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 public class IngredientServiceImpl implements IngredientService {
 	
 	private RecipeService recipeService;
+	private RecipeRepository recipeRepository;
 	
 	@Autowired
-	public IngredientServiceImpl(RecipeService recipeService) {
+	public IngredientServiceImpl(RecipeService recipeService, RecipeRepository recipeRepository) {
 		this.recipeService = recipeService;
+		this.recipeRepository = recipeRepository;
 	}
 	
 	@Override
@@ -84,6 +89,31 @@ public class IngredientServiceImpl implements IngredientService {
 				.filter(s -> s.getId().equals(command.getId()))
 				.findFirst()
 				.get();
+	}
+	
+	@Override
+	@Transactional
+	public void deleteById(Long recipeId, Long ingredientId) {
+		log.debug("Finding ingredient (ID: " + ingredientId + "with recipe Id: " + recipeId);
+		Optional<Recipe> recipeOptional = recipeRepository.findById(recipeId);
+		if (recipeOptional.isPresent()) {
+			log.debug("Recipe found");
+			Recipe recipe = recipeOptional.get();
+			Optional<Ingredient> ingredientOptional = recipe.getIngredients()
+					.stream()
+					.filter(ing -> ing.getId().equals(ingredientId))
+					.findFirst();
+			if (ingredientOptional.isPresent()) {
+				recipe.getIngredients().remove(ingredientOptional.get());
+				recipeRepository.save(recipe);
+				log.debug("Ingredient deleted");
+			} else {
+				log.debug("Ingredient not found");
+			}
+		} else {
+			log.debug("Recipe not found");
+		}
+		
 	}
 
 	
