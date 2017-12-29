@@ -17,14 +17,21 @@
 			
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h1 class="panel-title" th:text="${recipe.description}">Recipe Description</h1>
+						<div class="row">
+							<div class="col-md-8">
+								<h1 class="panel-title" th:text="${recipe.description}">Recipe Description</h1>
+							</div>
+							<div class="col-md-4">
+								<a class="btn btn-primary" th:href="@{'/recipe/' + ${recipe.id} + '/image/upload'}">Change Image</a>
+							</div>
+						</div>
 					</div>
 					<div class="panel-body">
 						<div class="row">
 							<div class="col-md-3">
 								<h5>Categories:</h5>
 							</div>
-							<div class="col-md-9" th:if="${recipe != null}">
+							<div class="col-md-3" th:if="${recipe != null}">
 								<ul th:remove="all">
 									<li>Cat one</li>
 									<li>Cat two</li>
@@ -33,6 +40,10 @@
 								<ul th:each="category:${recipe.categories}">
 									<li th:text="${category.categoryName}">A category</li>
 								</ul>
+							</div>
+							<div class="col-md-6">
+								<img src="../../static/images/guacamole400x400WithX.jpg" 
+									 th:src="@{/images/guacamole400x400WithX.jpg}" height="200" width="200">
 							</div>
 						</div>
 						<div class="row">
