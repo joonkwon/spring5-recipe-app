@@ -1,5 +1,11 @@
 package guru.springframework.controllers;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,5 +44,27 @@ public class ImageController {
 		log.debug("Image saved for recipe ID: " + recipeId);
 		
 		return "redirect:/recipe/" + recipeId + "/show";
+	}
+
+	@GetMapping("/recipe/{recipeId}/image")
+	public void getImage(@PathVariable("recipeId") String recipeId, HttpServletResponse response) {
+		log.debug("Fetching image for recipe ID: " + recipeId);
+		Byte[] imageBytes = imageService.getRecipeImage(new Long(recipeId));
+		if (imageBytes != null) {
+			byte[] byteArray = new byte[imageBytes.length];
+			int i = 0;
+			for (Byte b : imageBytes) {
+				byteArray[i] = b;
+				i++ ;
+			}
+			response.setContentType("image/jpeg");
+			InputStream is = new ByteArrayInputStream(byteArray);
+			try {
+				IOUtils.copy(is, response.getOutputStream());
+			} catch (Exception e) {
+				log.error("Exception occured: " + e);
+				e.printStackTrace();
+			}		
+		}
 	}
 }
