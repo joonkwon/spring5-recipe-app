@@ -54,7 +54,9 @@ public class ImageServiceImpl implements ImageService {
 		if (!recipeOptional.isPresent()) {
 			log.debug("recipe not found, ID: " + recipeId);
 		}
-		
+		if (recipeOptional.get().getImage() == null) {
+			log.debug("Image not found for recipe ID: " + recipeId);
+		}
 		return recipeOptional.get().getImage();		
 	}
 
