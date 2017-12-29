@@ -4,6 +4,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 
 import guru.springframework.commands.RecipeCommand;
 import guru.springframework.domain.Recipe;
+import guru.springframework.exceptions.NotFoundException;
 import guru.springframework.services.RecipeService;
 
 public class RecipeControllerTest {
@@ -97,5 +99,16 @@ public class RecipeControllerTest {
 			.andExpect(view().name("redirect:/"));
 		
 		verify(recipeService, times(1)).deleteById(11l);
+	}
+	
+	@Test
+	public void testHandleNotFound() throws Exception {
+		// given
+		when(recipeService.getRecipeById(anyLong())).thenThrow(NotFoundException.class);
+		
+		// when and then
+		mockMvc.perform(get("/recipe/5/show"))
+			.andExpect(status().isNotFound())
+			.andExpect(view().name("404error"));
 	}
 }
