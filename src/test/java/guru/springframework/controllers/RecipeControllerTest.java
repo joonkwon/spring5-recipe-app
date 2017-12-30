@@ -86,10 +86,11 @@ public class RecipeControllerTest {
 		
 		when(recipeService.saveRecipeCommand(any())).thenReturn(command);
 		mockMvc.perform(
-				post("/recipe")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("id", "5")
-				.param("description", "any description")
+					post("/recipe")
+					.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+					.param("id", "5")
+					.param("description", "any description")
+					.param("directions", "some directions")
 				)
 			.andExpect(status().is3xxRedirection())
 			.andExpect(view().name("redirect:recipe/5/show"));
