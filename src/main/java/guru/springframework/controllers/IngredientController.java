@@ -84,8 +84,7 @@ public class IngredientController {
 				"/ingredient/" + savedIngredientCommand.getId() + "/show";
 	}
 
-	@GetMapping
-	@RequestMapping("/recipe/{recipeId}/ingredients")
+	@GetMapping("/recipe/{recipeId}/ingredients")
 	public String showIngredientsList(@PathVariable("recipeId") String recipeId, Model model) {
 		log.debug("Fetching all ingredeints for recipe ID: " + recipeId);
 		Set<IngredientCommand> ingredients = ingredientService.getIngredientCommandsByrecipeId(new Long(recipeId));
