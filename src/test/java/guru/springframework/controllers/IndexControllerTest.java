@@ -53,6 +53,7 @@ public class IndexControllerTest {
 		
 		when(recipeService.getRecipes()).thenReturn(recipes);
 		
+		@SuppressWarnings("unchecked")
 		ArgumentCaptor<Set<Recipe>> argumentCaptor = ArgumentCaptor.forClass(Set.class);
 		
 		String output = indexController.index(model);
