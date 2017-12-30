@@ -71,6 +71,7 @@ public class RecipeControllerTest {
 			.andExpect(view().name("recipe/recipeform"))
 			.andExpect(model().attributeExists("recipe"));
 	}
+	
 	@Test
 	public void testNewRecipe() throws Exception {
 		mockMvc.perform(get("/recipe/new"))
@@ -94,6 +95,22 @@ public class RecipeControllerTest {
 				)
 			.andExpect(status().is3xxRedirection())
 			.andExpect(view().name("redirect:recipe/5/show"));
+	}
+	
+	@Test
+	public void testPostRecipeFail() throws Exception {
+		RecipeCommand command = new RecipeCommand();
+		command.setId(5l);
+		
+		when(recipeService.saveRecipeCommand(any())).thenReturn(command);
+		mockMvc.perform(
+					post("/recipe")
+					.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+					.param("id", "5")
+				)
+			.andExpect(status().isOk())
+			.andExpect(view().name("recipe/recipeform"))
+			.andExpect(model().attributeHasFieldErrors("recipe", "description"));
 	}
 	
 	@Test
