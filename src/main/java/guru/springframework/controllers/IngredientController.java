@@ -1,7 +1,5 @@
 package guru.springframework.controllers;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
