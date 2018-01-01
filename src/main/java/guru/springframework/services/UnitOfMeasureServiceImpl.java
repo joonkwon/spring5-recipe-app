@@ -2,13 +2,11 @@ package guru.springframework.services;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import guru.springframework.commands.UnitOfMeasureCommand;
-import guru.springframework.converters.UnitOfMeasureCommandToUnitOfMeasure;
 import guru.springframework.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import guru.springframework.domain.UnitOfMeasure;
 import guru.springframework.repositories.UnitOfMeasureRepository;
@@ -20,14 +18,12 @@ public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
 
 	private final UnitOfMeasureRepository uomRepository;
 	private final UnitOfMeasureToUnitOfMeasureCommand uomToCommand;
-	private final UnitOfMeasureCommandToUnitOfMeasure commandToUom;
 	
 	@Autowired
 	public UnitOfMeasureServiceImpl(UnitOfMeasureRepository uomRepository,
-			UnitOfMeasureToUnitOfMeasureCommand uomToCommand, UnitOfMeasureCommandToUnitOfMeasure commandToUom) {
+			UnitOfMeasureToUnitOfMeasureCommand uomToCommand) {
 		this.uomRepository = uomRepository;
 		this.uomToCommand = uomToCommand;
-		this.commandToUom = commandToUom;
 	}
 
 	@Override
